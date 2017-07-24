@@ -402,7 +402,7 @@ defmodule Money.Currency do
   def exponent!(currency),
     do: exponent(currency) || currency_doesnt_exist_error(currency)
 
-  @spec sub_units_count!(Money.t | String.t | atom) :: integer
+  @spec sub_units_count!(Money.t | Currency.t | String.t | atom) :: integer
   @doc ~S"""
   Returns the sub_units_count of the currency.
   An ArgumentError is raised if the currency doesn’t exist.
@@ -419,20 +419,6 @@ defmodule Money.Currency do
   def sub_units_count!(currency) do
     exponent = exponent!(currency)
     round(:math.pow(10, exponent))
-  end
-
-  @spec custom(String.t, String.t, integer) :: map
-  @doc ~S"""
-    Creates a custom currency.
-    Returns a Money.Currency compatible map
-
-  ## Example:
-
-      iex> Money.Currency.custom('Custom currency', '$', 4)
-      %{name: 'Custom currency', symbol: '$', exponent: 4}
-  """
-  def custom(name, symbol, exponent) do
-    %{name: name, symbol: symbol, exponent: exponent}
   end
 
   defp convert_currency(currency) when is_binary(currency) do

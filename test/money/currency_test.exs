@@ -68,6 +68,7 @@ defmodule Money.CurrencyTest do
 
   test "sub_units_count!/1" do
     assert Currency.sub_units_count!(:USD) == 100
+    assert Currency.sub_units_count!(%Money.Currency{name: "US Dollar", symbol: "$", exponent: 2}) == 100
     assert Currency.sub_units_count!(:JPY) == 1
     assert Currency.sub_units_count!(:CLF) == 10_000
     assert_raise ArgumentError, fn -> Currency.sub_units_count!(:ABC) end
@@ -82,9 +83,5 @@ defmodule Money.CurrencyTest do
     assert_raise ArgumentError, fn -> Currency.to_atom("ABC") end
     assert_raise ArgumentError, fn -> Currency.to_atom("abc") end
     assert_raise ArgumentError, fn -> Currency.to_atom("abc" <> "khgyujnk") end
-  end
-
-  test "custom/1" do
-    assert %{name: "Test Currency", symbol: "$", exponent: 4} == Currency.custom("Test Currency", "$", 4);
   end
 end
