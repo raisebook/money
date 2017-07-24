@@ -25,38 +25,44 @@ defmodule Money.CurrencyTest do
   test "name/1" do
     assert Currency.name(:USD) == "US Dollar"
     assert Currency.name(Currency.usd(100)) == "US Dollar"
+    assert Currency.name(%Money.Currency{name: "US Dollar", symbol: "$", exponent: 2}) == "US Dollar"
     assert Currency.name(:ABC) == nil
   end
 
   test "name!/1" do
     assert Currency.name!(:USD) == "US Dollar"
     assert Currency.name!(Currency.usd(100)) == "US Dollar"
+    assert Currency.name!(%Money.Currency{name: "US Dollar", symbol: "$", exponent: 2}) == "US Dollar"
     assert_raise ArgumentError, fn -> Currency.name!(:ABC) end
   end
 
   test "symbol/1" do
     assert Currency.symbol(:USD) == "$"
     assert Currency.symbol(Currency.usd(100)) == "$"
+    assert Currency.symbol(%Money.Currency{name: "US Dollar", symbol: "$", exponent: 2}) == "$"
     assert Currency.symbol(:ABC) == nil
   end
 
   test "symbol!/1" do
     assert Currency.symbol!(:USD) == "$"
     assert Currency.symbol!(Currency.usd(100)) == "$"
+    assert Currency.symbol!(%Money.Currency{name: "US Dollar", symbol: "$", exponent: 2}) == "$"
     assert_raise ArgumentError, fn -> Currency.symbol!(:ABC) end
   end
 
   test "exponent/1" do
     assert Currency.exponent(:USD) == 2
+    assert Currency.exponent(%Money.Currency{name: "US Dollar", symbol: "$", exponent: 2}) == 2
     assert Currency.exponent(:JPY) == 0
     assert Currency.exponent(:CLF) == 4
     assert Currency.exponent(:ABC) == nil
   end
 
   test "exponent!/1" do
-    assert Currency.exponent(:USD) == 2
-    assert Currency.exponent(:JPY) == 0
-    assert Currency.exponent(:CLF) == 4
+    assert Currency.exponent!(:USD) == 2
+    assert Currency.exponent!(%Money.Currency{name: "US Dollar", symbol: "$", exponent: 2}) == 2
+    assert Currency.exponent!(:JPY) == 0
+    assert Currency.exponent!(:CLF) == 4
     assert_raise ArgumentError, fn -> Currency.exponent!(:ABC) end
   end
 
@@ -76,5 +82,9 @@ defmodule Money.CurrencyTest do
     assert_raise ArgumentError, fn -> Currency.to_atom("ABC") end
     assert_raise ArgumentError, fn -> Currency.to_atom("abc") end
     assert_raise ArgumentError, fn -> Currency.to_atom("abc" <> "khgyujnk") end
+  end
+
+  test "custom/1" do
+    assert %{name: "Test Currency", symbol: "$", exponent: 4} == Currency.custom("Test Currency", "$", 4);
   end
 end

@@ -21,6 +21,13 @@ defmodule Money.Currency do
       %Money{amount: 100, currency: :USD}
   """
 
+  @type t :: %__MODULE__{
+    name: String.t,
+    symbol: String.t,
+    exponent: integer
+  }
+  defstruct name: "US Dollar", symbol: "$", exponent: 2
+
   @currencies %{
     AED: %{name: "UAE Dirham",                                             symbol: "د.إ",    exponent: 2},
     AFN: %{name: "Afghani",                                                symbol: "؋",    exponent: 2},
@@ -245,9 +252,9 @@ defmodule Money.Currency do
   def exists?(currency),
     do: Map.has_key?(@currencies, convert_currency(currency))
 
-  @spec get(Money.t | String.t | atom) :: map | nil
+  @spec get(Money.t | String.t | atom) :: %Money.Currency{} | nil
   @doc ~S"""
-  Returns a map with the name and symbol of the currency or nil if it doesn’t exist.
+  Returns a Currency struct or nil if it doesn’t exist.
 
   ## Example:
 
@@ -261,9 +268,9 @@ defmodule Money.Currency do
   def get(currency),
     do: @currencies[convert_currency(currency)]
 
-  @spec get!(Money.t | String.t | atom) :: map
+  @spec get!(Money.t | String.t | atom) :: %Money.Currency{}
   @doc ~S"""
-  Returns a map with the name and symbol of the currency.
+  Returns a Currency struct of the currency.
   An ArgumentError is raised if the currency doesn’t exist.
 
   ## Example:
@@ -296,7 +303,7 @@ defmodule Money.Currency do
     currency
   end
 
-  @spec name(Money.t | String.t | atom) :: String.t
+  @spec name(Money.t | Currency.t | String.t | atom) :: String.t
   @doc ~S"""
   Returns the name of the currency or nil if it doesn’t exist.
 
@@ -309,10 +316,12 @@ defmodule Money.Currency do
   """
   def name(%Money{currency: currency}),
     do: name(currency)
+  def name(%Money.Currency{name: name}),
+    do: name
   def name(currency),
     do: get(currency)[:name]
 
-  @spec name!(Money.t | String.t | atom) :: String.t
+  @spec name!(Money.t | Currency.t | String.t | atom) :: String.t
   @doc ~S"""
   Returns the name of the currency.
   An ArgumentError is raised if the currency doesn’t exist.
@@ -327,7 +336,7 @@ defmodule Money.Currency do
   def name!(currency),
     do: name(currency) || currency_doesnt_exist_error(currency)
 
-  @spec symbol(Money.t | String.t | atom) :: String.t
+  @spec symbol(Money.t | Currency.t | String.t | atom) :: String.t
   @doc ~S"""
   Returns the symbol of the currency or nil if it doesn’t exist.
 
@@ -340,10 +349,12 @@ defmodule Money.Currency do
   """
   def symbol(%Money{currency: currency}),
     do: symbol(currency)
+  def symbol(%Money.Currency{symbol: symbol}),
+    do: symbol
   def symbol(currency),
     do: get(currency)[:symbol]
 
-  @spec symbol!(Money.t | String.t | atom) :: String.t
+  @spec symbol!(Money.t | Currency.t | String.t | atom) :: String.t
   @doc ~S"""
   Returns the symbol of the currency.
   An ArgumentError is raised if the currency doesn’t exist.
@@ -358,7 +369,7 @@ defmodule Money.Currency do
   def symbol!(currency),
     do: symbol(currency) || currency_doesnt_exist_error(currency)
 
-  @spec exponent(Money.t | String.t | atom) :: integer
+  @spec exponent(Money.t | Currency.t | String.t | atom) :: integer
   @doc ~S"""
   Returns the exponent of the currency or nil if it doesn’t exist.
 
@@ -371,10 +382,12 @@ defmodule Money.Currency do
   """
   def exponent(%Money{currency: currency}),
     do: exponent(currency)
+  def exponent(%Money.Currency{exponent: exponent}),
+    do: exponent
   def exponent(currency),
     do: get(currency)[:exponent]
 
-  @spec exponent!(Money.t | String.t | atom) :: integer
+  @spec exponent!(Money.t | Currency.t | String.t | atom) :: integer
   @doc ~S"""
   Returns the exponent of the currency.
   An ArgumentError is raised if the currency doesn’t exist.
@@ -406,6 +419,20 @@ defmodule Money.Currency do
   def sub_units_count!(currency) do
     exponent = exponent!(currency)
     round(:math.pow(10, exponent))
+  end
+
+  @spec custom(String.t, String.t, integer) :: map
+  @doc ~S"""
+    Creates a custom currency.
+    Returns a Money.Currency compatible map
+
+  ## Example:
+
+      iex> Money.Currency.custom('Custom currency', '$', 4)
+      %{name: 'Custom currency', symbol: '$', exponent: 4}
+  """
+  def custom(name, symbol, exponent) do
+    %{name: name, symbol: symbol, exponent: exponent}
   end
 
   defp convert_currency(currency) when is_binary(currency) do
