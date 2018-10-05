@@ -196,7 +196,11 @@ defmodule Money.Currency do
     YER: %{name: "Yemeni Rial",                                            symbol: "﷼",    exponent: 2},
     ZAR: %{name: "Rand",                                                   symbol: "R",    exponent: 2},
     ZMK: %{name: "Zambian Kwacha",                                         symbol: "ZK",    exponent: 2},
-    ZWL: %{name: "Zimbabwe Dollar",                                        symbol: "$",    exponent: 2}
+    ZWL: %{name: "Zimbabwe Dollar",                                        symbol: "$",    exponent: 2},
+    # Added to support more subcents
+    AUD4: %{name: "Australian Dollar",                                      symbol: "$",    exponent: 4},
+    USD4: %{name: "US Dollar",                                              symbol: "$",    exponent: 4},
+    GBP4: %{name: "Pound Sterling",                                         symbol: "£",    exponent: 4}
   }
 
   @currencies |> Enum.each(fn ({cur, detail}) ->
